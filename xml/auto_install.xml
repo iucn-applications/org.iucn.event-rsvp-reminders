@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<CustomData>
+  <CustomGroups>
+    <CustomGroup>
+      <name>Event_Invitation</name>
+      <title>Event Invitation</title>
+      <extends>Participant</extends>
+      <style>Inline</style>
+      <collapse_display>1</collapse_display>
+      <weight>99</weight>
+      <is_active>1</is_active>
+      <table_name>civicrm_value_event_invitation</table_name>
+      <is_multiple>0</is_multiple>
+      <collapse_adv_display>0</collapse_adv_display>
+      <is_reserved>0</is_reserved>
+      <is_public>1</is_public>
+    </CustomGroup>
+  </CustomGroups>
+  <CustomFields>
+    <CustomField>
+      <name>Invitation_Reply</name>
+      <label>Invitation Reply</label>
+      <data_type>String</data_type>
+      <html_type>Select</html_type>
+      <is_required>0</is_required>
+      <is_searchable>1</is_searchable>
+      <is_search_range>0</is_search_range>
+      <weight>1</weight>
+      <default>pending</default>
+      <is_active>1</is_active>
+      <is_view>1</is_view>
+      <text_length>255</text_length>
+      <column_name>invitation_reply</column_name>
+      <in_selector>0</in_selector>
+      <option_group_name>og_invitation_reply</option_group_name>
+      <custom_group_name>Event_Invitation</custom_group_name>
+    </CustomField>
+    <CustomField>
+      <name>Invitation_Reply_Date</name>
+      <label>Invitation Reply Date</label>
+      <data_type>Date</data_type>
+      <html_type>Select Date</html_type>
+      <is_required>0</is_required>
+      <is_searchable>1</is_searchable>
+      <is_search_range>1</is_search_range>
+      <weight>2</weight>
+      <is_active>1</is_active>
+      <is_view>1</is_view>
+      <text_length>255</text_length>
+      <column_name>invitation_reply_date</column_name>
+      <in_selector>0</in_selector>
+      <date_format>dd/mm/yy</date_format>
+      <time_format>2</time_format>
+      <custom_group_name>Event_Invitation</custom_group_name>
+    </CustomField>
+  </CustomFields>
+  <OptionGroups>
+    <OptionGroup>
+      <name>og_invitation_reply</name>
+      <title>Invitation Reply</title>
+      <data_type>String</data_type>
+      <is_reserved>0</is_reserved>
+      <is_active>1</is_active>
+    </OptionGroup>
+  </OptionGroups>
+  <OptionValues>
+    <OptionValue>
+      <label>Intend to participate</label>
+      <value>yes</value>
+      <name>Intend_to_participate</name>
+      <filter>0</filter>
+      <is_default>0</is_default>
+      <weight>1</weight>
+      <is_optgroup>0</is_optgroup>
+      <is_reserved>0</is_reserved>
+      <is_active>1</is_active>
+      <option_group_name>og_invitation_reply</option_group_name>
+    </OptionValue>
+    <OptionValue>
+      <label>Will not participate</label>
+      <value>no</value>
+      <name>Will_not_participate</name>
+      <filter>0</filter>
+      <is_default>0</is_default>
+      <weight>2</weight>
+      <is_optgroup>0</is_optgroup>
+      <is_reserved>0</is_reserved>
+      <is_active>1</is_active>
+      <option_group_name>og_invitation_reply</option_group_name>
+    </OptionValue>
+    <OptionValue>
+      <label>Under consideration</label>
+      <value>maybe</value>
+      <name>Under_consideration</name>
+      <filter>0</filter>
+      <is_default>0</is_default>
+      <weight>3</weight>
+      <is_optgroup>0</is_optgroup>
+      <is_reserved>0</is_reserved>
+      <is_active>1</is_active>
+      <option_group_name>og_invitation_reply</option_group_name>
+    </OptionValue>
+    <OptionValue>
+      <label>Pending</label>
+      <value>pending</value>
+      <name>Pending</name>
+      <filter>0</filter>
+      <is_default>0</is_default>
+      <weight>4</weight>
+      <is_optgroup>0</is_optgroup>
+      <is_reserved>0</is_reserved>
+      <is_active>1</is_active>
+      <option_group_name>og_invitation_reply</option_group_name>
+    </OptionValue>
+  </OptionValues>
+</CustomData>

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<menu>
+  <item>
+    <path>civicrm/eventrsvp</path>
+    <page_callback>CRM_EventRsvpReminders_Page_RSVPPage</page_callback>
+    <!-- <title>Thank you</title> -->
+    <access_arguments>*always allow*</access_arguments>
+  </item>
+</menu>
