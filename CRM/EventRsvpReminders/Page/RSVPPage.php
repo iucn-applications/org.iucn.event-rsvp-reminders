@@ -25,11 +25,21 @@ class CRM_EventRsvpReminders_Page_RSVPPage extends CRM_Core_Page {
 
         // Checksum matches: we can trust this call - checkPermissions = FALSE
         try{
-          $api_call = \Civi\Api4\Participant::update(FALSE)
+          $result = \Civi\Api4\Participant::update(FALSE)
             ->addWhere('id', '=', $pid)
             ->addValue("Event_Invitation.$action", $response)
             ->addValue("Event_Invitation.{$action}_Date", (new DateTime())->format('Y-m-d h:i:s') )
+            // ->setReload(TRUE)
+            ->addChain('confirmation', \Civi\Api4\Participant::get()
+              ->addWhere('id', '=', '$id')
+              ->addSelect("Event_Invitation.$action")
+            )
             ->execute();         	
+          // Double check
+          if( $result[0]['confirmation'][0]["Event_Invitation.$action"] != $response ){
+            $error = true;
+            $err_msg[] = "API error: no error was returned, but the value was not updated";  
+          }
         } catch( Exception $th ){
           $error = true;
           $err_msg[] = $th->getMessage();  
@@ -48,7 +58,7 @@ class CRM_EventRsvpReminders_Page_RSVPPage extends CRM_Core_Page {
       // Log
       Civi::log()->error( 'Event RSVP: ' . implode(PHP_EOL, $err_msg) . PHP_EOL . "GET:" . print_r($_GET, true), array('Event RSVP', __CLASS__), );
       // Get event admin email (if exists)
-      $event_emails = $participants = \Civi\Api4\Participant::get(FALSE)
+      $event_emails = \Civi\Api4\Participant::get(FALSE)
         ->addSelect('email.email')
         ->setJoin([
           ['Event AS event', TRUE, NULL, ['event.id', '=', 'event_id']], 
