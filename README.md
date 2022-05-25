@@ -4,7 +4,7 @@
 
 ## Description
 
-Adds functionality to capute Event Invitations responses
+Adds functionality to capture Event Invitations responses
 * Custom fields to capture the participants response (modifiable)
 * A token with a unique link for each posible response
 * A url to capture the participant's reponse and update the fields
