@@ -175,10 +175,10 @@ class CRM_Event_RSVPActionMapping extends \CRM_Event_ActionMapping {
             // Values
             $recipList = \CRM_Utils_Array::explodePadded($schedule->recipient_listing);
             // If null -> we need to left join and add a "is null" condition:
-            if( array_key_exists('null', $recipList) ){
+            if( ($k = array_search('null', $recipList)) !== FALSE ){
               $query->join('cf', "LEFT JOIN {$field["custom_group.table_name"]} cf ON e.id = cf.entity_id");
-              unset($recipList['null']);
-              if( !empty($recipList) ){ // get only null values
+              unset($recipList[$k]);
+              if( empty($recipList) ){ // get only null values
                 $query->where("cf.{$field['column_name']} IS NULL");
               } else{ // null OR specific values
                 $query->where("cf.{$field['column_name']} IS NULL OR cf.{$field['column_name']} IN (@recipList)")

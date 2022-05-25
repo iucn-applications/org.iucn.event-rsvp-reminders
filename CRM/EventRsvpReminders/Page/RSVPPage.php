@@ -27,8 +27,8 @@ class CRM_EventRsvpReminders_Page_RSVPPage extends CRM_Core_Page {
         try{
           $api_call = \Civi\Api4\Participant::update(FALSE)
             ->addWhere('id', '=', $pid)
-            ->addValue("gEvent_Invitation.$action", $response)
-            ->addValue("gEvent_Invitation.{$action}_Date", (new DateTime())->format('Y-m-d h:i:s') )
+            ->addValue("Event_Invitation.$action", $response)
+            ->addValue("Event_Invitation.{$action}_Date", (new DateTime())->format('Y-m-d h:i:s') )
             ->execute();         	
         } catch( Exception $th ){
           $error = true;
