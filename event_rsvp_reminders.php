@@ -96,8 +96,8 @@ function _event_rsvp_reminders_evaluate_tokens(\Civi\Token\Event\TokenValueEvent
           $response = $value['value'];
           $url = \CRM_Utils_System::url("civicrm/eventrsvp","a=$action&r=$response&pid=$pid&cid=$cid&cs=$checksum",true,null,false);
           // Token values
-          $row->tokens('event', "$action.$response.url",$url);
-          $row->tokens('event', "$action.$response", sprintf("<a href='%s' target='_blank' class='btn'>{$value['label']}</a>", $url ) );
+          $row->tokens('event', "{$action}_{$response}_url",$url);
+          $row->tokens('event', "{$action}_{$response}", sprintf("<a href='%s' target='_blank' class='btn'>{$value['label']}</a>", $url ) );
         }
       }
     }
@@ -145,8 +145,8 @@ function _event_rsvp_reminders_civicrm_token_fields($return_tokens = FALSE)
     foreach( $field['values'] as $value ){
       if( preg_match($no_token_values, $value['value']) ) continue;
       if( $return_tokens ){
-        $tokens['event']["event.$fname.{$value['value']}"]      = E::ts($value['label']) . ' :: ' . E::ts("Event Invitation: {$field['custom_field.label']}");
-        $tokens['event']["event.$fname.{$value['value']}.url"]  = E::ts("{$value['label']} - url") . ' :: ' . E::ts("Event Invitation: {$field['custom_field.label']}");
+        $tokens['event']["event.{$fname}_{$value['value']}"]      = E::ts($value['label']) . ' :: ' . E::ts("Event Invitation: {$field['custom_field.label']}");
+        $tokens['event']["event.{$fname}_{$value['value']}_url"]  = E::ts("{$value['label']} - url") . ' :: ' . E::ts("Event Invitation: {$field['custom_field.label']}");
       } else $token_fields[$fname]['values'][] = $value;
     }
   }
