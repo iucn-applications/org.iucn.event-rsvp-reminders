@@ -1,14 +1,41 @@
 # org.iucn.event-rsvp-reminders
 
-![Screenshot](/images/screenshot.png)
+![Screenshot](/images/event_rsvp_reminders.gif)
 
-Adds RSVP capture functionality:
+## Description
+
+Adds functionality to capute Event Invitations responses
 * Custom fields to capture the participants response (modifiable)
 * A token with a unique link for each posible response
 * A url to capture the participant's reponse and update the fields
 * Possibility to filter reminder by custom fields to allow to send reminders only to those who haven't answered
 
 The extension is licensed under [AGPL-3.0](LICENSE.txt).
+
+## Details
+
+### RSVP Functionality
+
+* Creates Custom Group **Event Invitation** for **Participants**
+* Creates Custom Fields **Invitation Reply** and **Invitation Reply Date**
+* Creates a URL to receive the invitation responses - *civicrm/eventrsvp*
+* Generates tokens for each response which evaluate into an url to store said response.
+* All fields inside **Event Invitation** can be modifiable. The way it works is:
+  * All fields in **Event Invitation** that relate to an option group (Select/Radio/Checkbox) will be considered when generating the tokens
+  * When storing the response for a field *<field_name>*, if the field *<field_name>**_date*** exists, the date will also be stored
+* This also means that we can simply add more fields to track other invitation types. 
+  * I.e.: let's say we want to store the replies to a *Save the Date* and to an actual Invitation. For that we only need to create two new fields: **Save the date reply** (type select) and **Save the date reply date** (type date, optional)
+
+
+
+### Reminders' filters
+
+In order for this functionality to work, we'll need to send Invitations / Reminders to participants, but we don't want to bother those who have answered already.
+As such this extension extends the Schedule Reminder functionality to allow to filter reminders by Custom fields:
+* When setting a reminder for an event, select **Limit to** and the available Custom fields with options will appear in the list
+* Simply select the value that you want to receive the Reminder (limit to)
+
+Note: Only works for **Limit To**. Does NOT work for **Also Include**.
 
 ## Requirements
 
@@ -41,8 +68,14 @@ cv en event_rsvp_reminders
 
 ## Getting Started
 
-(* FIXME: Where would a new user navigate to get started? What changes would they see? *)
+Works out of the box.
+Just send use the Event Invitation tokens when sending reminders.
+
 
 ## Known Issues
 
-(* FIXME *)
+* There is no security mechanism before saving the responses: each time a user clicks on one of the links, the response will be store, overriding whatever was there before
+
+## Todos
+
+* Add configuration for "Thank You" text
