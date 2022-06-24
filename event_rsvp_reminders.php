@@ -163,31 +163,14 @@ function _event_rsvp_reminders_civicrm_token_fields($return_tokens = FALSE)
  **/
 function event_rsvp_reminders_civicrm_buildForm($formName, &$form)
 {
-  // $form->get
-  // echo $formName;
-  // Civi::resources()->addScript("console.log('$formName');");
-  // $('#entity_0, #limit_to', $form).change(buildSelects);
   if( $formName == "CRM_Admin_Form_ScheduleReminders" ){
-    // echo $form->getContext();
-
-    
-    // Civi::resources()->addScript("$('#entity_1, #limit_to', $('form.CRM_Admin_Form_ScheduleReminders')).change(buildSelects);");
-     
-
     // Change recipient listing label
-    // $form['_elements'][ $form['_elementIndex']['recipient_listing'] ]['_label'] = E::ts('Values');
-    // $form['_elements'][ $form['_elementIndex']['recipient_listing'] ]['_label'] = E::ts('Values');
-    $recipient_listing = $form->getElement("recipient_listing");
-    $recipient_listing->setLabel(E::ts('Values'));
-    $recipient_listing->setAttribute('placeholder', '- selecet Value(s) -');
-    // $
-    // $recipient_listing = $form->updateElementAttr("recipient_listing", array(  ) );
-    // $recipient_listing->set
-
+    try {
+      $recipient_listing = $form->getElement("recipient_listing");
+      $recipient_listing->setLabel(E::ts('Values'));
+      $recipient_listing->setAttribute('placeholder', '- selecet Value(s) -');
+    } catch( Throwable $th ) { /* do nothing */ }
   }
-  // if( $formName === "CRM_Event_Form_Participant" || $formName === "CRM_Event_Form_ParticipantView" ){
-  //   // echo "li";
-  // }
 }
 
 
