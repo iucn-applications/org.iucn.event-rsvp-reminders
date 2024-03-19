@@ -55,7 +55,7 @@ function _event_rsvp_reminders_evaluate_tokens(\Civi\Token\Event\TokenValueEvent
 {
   $token_processor = $e->getTokenProcessor();
   // Validate we're in Schedule reminder, else return
-  if( $token_processor->context['controller'] !== "CRM_Core_BAO_ActionSchedule" ) return;
+  if( !isset($token_processor->context['controller']) || $token_processor->context['controller'] !== "CRM_Core_BAO_ActionSchedule" ) return;
 
   $rowContexts = $e->getTokenProcessor()->rowContexts;
   foreach ($e->getRows() as $row) {
