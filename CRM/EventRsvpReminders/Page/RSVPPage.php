@@ -11,15 +11,15 @@ class CRM_EventRsvpReminders_Page_RSVPPage extends CRM_Core_Page {
     $err_msg = array();
 
     if( isset($_GET['a']) &&
-        isset($_GET['r']) && 
+        isset($_GET['r']) &&
         isset($_GET['pid']) &&
         isset($_GET['cid']) &&
         isset($_GET['cs']) ) {
-      
+
       $action = $_GET['a'];
       $response = $_GET['r'];
       $pid = $_GET['pid'];
-      
+
       // Validate checksum
       if( CRM_Contact_BAO_Contact_Utils::validChecksum($_GET['cid'], $_GET['cs']) ){
 
@@ -34,42 +34,42 @@ class CRM_EventRsvpReminders_Page_RSVPPage extends CRM_Core_Page {
               ->addWhere('id', '=', '$id')
               ->addSelect("Event_Invitation.$action")
             )
-            ->execute();         	
+            ->execute();
           // Double check
           if( $result[0]['confirmation'][0]["Event_Invitation.$action"] != $response ){
             $error = true;
-            $err_msg[] = "API error: no error was returned, but the value was not updated";  
+            $err_msg[] = "API error: no error was returned, but the value was not updated";
           }
         } catch( Exception $th ){
           $error = true;
-          $err_msg[] = $th->getMessage();  
+          $err_msg[] = $th->getMessage();
         }
 
       } else{
         $error = true;
-        $err_msg[] = "Checksum failed";  
+        $err_msg[] = "Checksum failed";
       }
     } else{
       $error = true;
       $err_msg[] = "Missing parameters";
     }
 
-    if( $error ){      
+    if( $error ){
       // Log
       Civi::log()->error( 'Event RSVP: ' . implode(PHP_EOL, $err_msg) . PHP_EOL . "GET:" . print_r($_GET, true), array('Event RSVP', __CLASS__), );
       // Get event admin email (if exists)
       $event_emails = \Civi\Api4\Participant::get(FALSE)
         ->addSelect('email.email')
         ->setJoin([
-          ['Event AS event', TRUE, NULL, ['event.id', '=', 'event_id']], 
-          ['LocBlock AS loc_block', TRUE, NULL, ['loc_block.id', '=', 'event.loc_block_id']], 
+          ['Event AS event', TRUE, NULL, ['event.id', '=', 'event_id']],
+          ['LocBlock AS loc_block', TRUE, NULL, ['loc_block.id', '=', 'event.loc_block_id']],
           ['Email AS email', FALSE, NULL, ['OR', [['email.id', '=', 'loc_block.email_id'], ['email.id', '=', 'loc_block.email_2_id']]]],
         ])
         ->addWhere('id', '=', $pid)
         ->execute();
       if( isset($event_emails[0]['email.email']) ) $admin_email = $event_emails[0]['email.email'];
       elseif( isset($event_emails[1]['email.email']) ) $admin_email = $event_emails[1]['email.email'];
-      
+
       $this->assign("error", $error);
       if($admin_email) $this->assign("admin_email", $admin_email);
     }
