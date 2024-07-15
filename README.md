@@ -23,7 +23,7 @@ The extension is licensed under [AGPL-3.0](LICENSE.txt).
 * All fields inside **Event Invitation** can be modifiable. The way it works is:
   * All fields in **Event Invitation** that relate to an option group (Select/Radio/Checkbox) will be considered when generating the tokens
   * When storing the response for a field *<field_name>*, if the field *<field_name>**_date*** exists, the date will also be stored
-* This also means that we can simply add more fields to track other invitation types. 
+* This also means that we can simply add more fields to track other invitation types.
   * I.e.: let's say we want to store the replies to a *Save the Date* and to an actual Invitation. For that we only need to create two new fields: **Save the date reply** (type select) and **Save the date reply date** (type date, optional)
 
 
@@ -39,7 +39,7 @@ Note: Only works for **Limit To**. Does NOT work for **Also Include**.
 
 ## Requirements
 
-* PHP v7.2+
+* PHP v7.4+
 * CiviCRM 5.35
 
 ## Installation (Web UI)

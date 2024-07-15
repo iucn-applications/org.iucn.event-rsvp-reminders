@@ -20,9 +20,39 @@ use Civi\ActionSchedule\RecipientBuilder;
  * event's start-date/end-date, with additional filtering by
  * event-type, event-template, or event-id.
  */
-class CRM_Event_RSVPActionMapping extends \CRM_Event_ActionMapping {
+class CRM_Event_RSVPActionMapping extends \CRM_Event_ActionMapping implements \Civi\ActionSchedule\MappingInterface {
 
   protected $custom_fields_with_options = array();
+
+  // Add properties to hold the mapping values
+  protected $id;
+  protected $entity;
+  protected $entity_label;
+  protected $entity_value;
+  protected $entity_value_label;
+  protected $entity_status;
+  protected $entity_status_label;
+
+  // Constructor to initialize the mapping properties
+  public function __construct(array $mapping) {
+    $this->id = $mapping['id'];
+    $this->entity = $mapping['entity'];
+    $this->entity_label = $mapping['entity_label'];
+    $this->entity_value = $mapping['entity_value'];
+    $this->entity_value_label = $mapping['entity_value_label'];
+    $this->entity_status = $mapping['entity_status'];
+    $this->entity_status_label = $mapping['entity_status_label'];
+  }
+
+  public function getName(): string {
+      // Implement the method to return the name
+      return "RSVP Action Mapping";
+  }
+
+  public function getValueLabels(): array {
+    return [];
+  }
+
 
   /**
    * Register our custom action mappings.
@@ -30,34 +60,40 @@ class CRM_Event_RSVPActionMapping extends \CRM_Event_ActionMapping {
    *
    * @param \Civi\ActionSchedule\Event\MappingRegisterEvent $registrations
    */
-  public static function onRegisterActionMappings(\Civi\ActionSchedule\Event\MappingRegisterEvent $registrations) {
-    $registrations->register(CRM_Event_RSVPActionMapping::create([
-      'id' => CRM_Event_ActionMapping::EVENT_TYPE_MAPPING_ID, // Override core ActionMapping
-      'entity' => 'civicrm_participant',
-      'entity_label' => ts('Event Type'),
-      'entity_value' => 'event_type',
-      'entity_value_label' => ts('Event Type'),
-      'entity_status' => 'civicrm_participant_status_type',
-      'entity_status_label' => ts('Participant Status'),
-    ]));
-    $registrations->register(CRM_Event_RSVPActionMapping::create([
-      'id' => CRM_Event_ActionMapping::EVENT_NAME_MAPPING_ID, // Override core ActionMapping
-      'entity' => 'civicrm_participant',
-      'entity_label' => ts('Event Name'),
-      'entity_value' => 'civicrm_event',
-      'entity_value_label' => ts('Event Name'),
-      'entity_status' => 'civicrm_participant_status_type',
-      'entity_status_label' => ts('Participant Status'),
-    ]));
-    $registrations->register(CRM_Event_RSVPActionMapping::create([
-      'id' => CRM_Event_ActionMapping::EVENT_TPL_MAPPING_ID, // Override core ActionMapping
-      'entity' => 'civicrm_participant',
-      'entity_label' => ts('Event Template'),
-      'entity_value' => 'event_template',
-      'entity_value_label' => ts('Event Template'),
-      'entity_status' => 'civicrm_participant_status_type',
-      'entity_status_label' => ts('Participant Status'),
-    ]));
+  public static function onRegisterActionMappings(\Civi\ActionSchedule\Event\MappingRegisterEvent $registrations): void {
+    $mappings = [
+        [
+            'id' => CRM_Event_ActionMapping::EVENT_TYPE_MAPPING_ID, // Override core ActionMapping
+            'entity' => 'civicrm_participant',
+            'entity_label' => ts('Event Type'),
+            'entity_value' => 'event_type',
+            'entity_value_label' => ts('Event Type'),
+            'entity_status' => 'civicrm_participant_status_type',
+            'entity_status_label' => ts('Participant Status'),
+        ],
+        [
+            'id' => CRM_Event_ActionMapping::EVENT_NAME_MAPPING_ID, // Override core ActionMapping
+            'entity' => 'civicrm_participant',
+            'entity_label' => ts('Event Name'),
+            'entity_value' => 'civicrm_event',
+            'entity_value_label' => ts('Event Name'),
+            'entity_status' => 'civicrm_participant_status_type',
+            'entity_status_label' => ts('Participant Status'),
+        ],
+        [
+            'id' => CRM_Event_ActionMapping::EVENT_TPL_MAPPING_ID, // Override core ActionMapping
+            'entity' => 'civicrm_participant',
+            'entity_label' => ts('Event Template'),
+            'entity_value' => 'event_template',
+            'entity_value_label' => ts('Event Template'),
+            'entity_status' => 'civicrm_participant_status_type',
+            'entity_status_label' => ts('Participant Status'),
+        ],
+    ];
+
+    foreach ($mappings as $mapping) {
+        $registrations->register(new self($mapping));
+    }
   }
 
   /**
@@ -70,7 +106,7 @@ class CRM_Event_RSVPActionMapping extends \CRM_Event_ActionMapping {
    *   array(string $value => string $label).
    *   Ex: array('assignee' => 'Activity Assignee').
    */
-  public function getRecipientTypes() {
+  public static function getRecipientTypes(): array {
     $parent_receipient_types = parent::getRecipientTypes();
 
     $event_id = null;
@@ -105,7 +141,7 @@ class CRM_Event_RSVPActionMapping extends \CRM_Event_ActionMapping {
    *   Ex: array(1 => 'Attendee', 2 => 'Volunteer').
    * @see getRecipientTypes
    */
-  public function getRecipientListing($recipientType) {
+  public function getRecipientListing($recipientType): array {
     switch ($recipientType) {
       case 'participant_role':
         return \CRM_Event_PseudoConstant::participantRole();
@@ -119,7 +155,7 @@ class CRM_Event_RSVPActionMapping extends \CRM_Event_ActionMapping {
         if($recipientType) {
           $values = array_merge( array('null' => '- Empty -'), CRM_Core_OptionGroup::values($recipientType) );
           if( $values ) return $values;
-        } 
+        }
         return [];
     }
   }
@@ -137,7 +173,7 @@ class CRM_Event_RSVPActionMapping extends \CRM_Event_ActionMapping {
    * @return \CRM_Utils_SQL_Select
    * @see RecipientBuilder
    */
-  public function createQuery($schedule, $phase, $defaultParams) {
+  public function createQuery($schedule, $phase, $defaultParams): CRM_Utils_SQL_Select {
     $selectedValues = (array) \CRM_Utils_Array::explodePadded($schedule->entity_value);
     $selectedStatuses = (array) \CRM_Utils_Array::explodePadded($schedule->entity_status);
 
@@ -162,10 +198,10 @@ class CRM_Event_RSVPActionMapping extends \CRM_Event_ActionMapping {
         case 'manual':
         case 'group':
           break;
-  
+
         default:
 
-          $event_id = ( $schedule->entity_value && (int) $schedule->entity_value == $schedule->entity_value ) ? $schedule->entity_value : null; 
+          $event_id = ( $schedule->entity_value && (int) $schedule->entity_value == $schedule->entity_value ) ? $schedule->entity_value : null;
           $custom_fields_with_options = _get_fields_with_options($event_id);
 
           // Filter by custom fields
@@ -293,13 +329,13 @@ function _get_fields_with_options($event_id = null)
     // return cached
     if( $event_id && isset( $custom_fields_with_options[ $event_id ] ) ) return $custom_fields_with_options[ $event_id ];
     elseif( isset( $custom_fields_with_options['all'] ) ) return $custom_fields_with_options['all'];
-  } 
+  }
   else { // not cached
 
-    $custom_fields_with_options_api = \Civi\Api4\CustomField::get()  
+    $custom_fields_with_options_api = \Civi\Api4\CustomField::get()
       ->addSelect('label', 'option_group.name', 'custom_group.table_name', 'column_name')
       ->setJoin([
-        ['CustomGroup AS custom_group', TRUE, NULL, ['custom_group.id', '=', 'custom_group_id']], 
+        ['CustomGroup AS custom_group', TRUE, NULL, ['custom_group.id', '=', 'custom_group_id']],
         ['OptionGroup AS option_group', TRUE, NULL, ['option_group.id', '=', 'option_group_id']],
       ])
       ->addWhere('custom_group.extends', '=', 'participant')
@@ -309,10 +345,10 @@ function _get_fields_with_options($event_id = null)
     // Only for this event
     if( $event_id ) {
       $event_type = \Civi\Api4\Event::get()->addSelect('event_type_id')->addWhere('id', '=', $event_id)->execute()->single()['event_type_id'];
-      $custom_fields_with_options_api->addClause('OR', 
-        ['custom_group.extends_entity_column_id', 'IS NULL'], 
-        ['custom_group.extends_entity_column_id', '=', 1], 
-        ['AND', [['custom_group.extends_entity_column_id', '=', 3], ['custom_group.extends_entity_column_value', 'CONTAINS', $event_type]]], 
+      $custom_fields_with_options_api->addClause('OR',
+        ['custom_group.extends_entity_column_id', 'IS NULL'],
+        ['custom_group.extends_entity_column_id', '=', 1],
+        ['AND', [['custom_group.extends_entity_column_id', '=', 3], ['custom_group.extends_entity_column_value', 'CONTAINS', $event_type]]],
         ['AND', [['custom_group.extends_entity_column_id', '=', 2], ['custom_group.extends_entity_column_value', 'CONTAINS', $event_id]]]
       );
       $custom_fields_with_options[$event_id] = $custom_fields_with_options_api->execute()->indexBy('option_group.name')->getArrayCopy();
