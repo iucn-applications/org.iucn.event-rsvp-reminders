@@ -8,7 +8,7 @@ class CRM_EventRsvpReminders_Page_RSVPPage extends CRM_Core_Page {
     CRM_Utils_System::setTitle( E::ts('Thank you') );
 
     $error = false;
-    $err_msg = array();
+    $err_msg = [];
 
     if( isset($_GET['a']) &&
         isset($_GET['r']) &&
@@ -56,7 +56,7 @@ class CRM_EventRsvpReminders_Page_RSVPPage extends CRM_Core_Page {
 
     if( $error ){
       // Log
-      Civi::log()->error( 'Event RSVP: ' . implode(PHP_EOL, $err_msg) . PHP_EOL . "GET:" . print_r($_GET, true), array('Event RSVP', __CLASS__), );
+      Civi::log()->error( 'Event RSVP: ' . implode(PHP_EOL, $err_msg) . PHP_EOL . "GET:" . print_r($_GET, true), ['Event RSVP', __CLASS__], );
       // Get event admin email (if exists)
       $event_emails = \Civi\Api4\Participant::get(FALSE)
         ->addSelect('email.email')

@@ -21,11 +21,11 @@ function event_rsvp_reminders_civicrm_container(\Symfony\Component\DependencyInj
   $dispatcher = $container->findDefinition('dispatcher');
   // Add listener for tokens
   $dispatcher->addMethodCall('addListener',
-    array('civi.token.eval', '_event_rsvp_reminders_evaluate_tokens')
+    ['civi.token.eval', '_event_rsvp_reminders_evaluate_tokens']
   )->setPublic(TRUE);
   // Add listener for ActionMappings
   $dispatcher->addMethodCall('addListener', 
-    array('civi.actionSchedule.getMappings', ['CRM_Event_RSVPActionMapping', 'onRegisterActionMappings'])
+    ['civi.actionSchedule.getMappings', ['CRM_Event_RSVPActionMapping', 'onRegisterActionMappings']]
   );
 }
 
@@ -118,8 +118,8 @@ function _event_rsvp_reminders_civicrm_token_fields($return_tokens = FALSE)
   //Hardcoded list of value that will NOT create tokens
   $no_token_values = '/(pending)|(no[-\s_\.]*answer)/i';
 
-  $token_fields = array();
-  $tokens = array();
+  $token_fields = [];
+  $tokens = [];
   // Get fields from "Invitation RSVP" group that have multiple options
   $custom_fields = \Civi\Api4\CustomGroup::get()
     ->addSelect('id', 'custom_field.name', 'custom_field.label', 'custom_field.option_group_id')
@@ -137,10 +137,10 @@ function _event_rsvp_reminders_civicrm_token_fields($return_tokens = FALSE)
   foreach($custom_fields as $field){
     $fname = $field['custom_field.name'];
     if( !$return_tokens ){
-      $token_fields[ $fname ] = array(
+      $token_fields[ $fname ] = [
         'name' => $fname,
         'label' => $field['custom_field.label'],
-      );
+      ];
     }
     foreach( $field['values'] as $value ){
       if( preg_match($no_token_values, $value['value']) ) continue;
@@ -213,8 +213,8 @@ function _event_rsvp_reminders_on_uninstall()
       ->addJoin('OptionGroup AS option_group',FALSE,null, ['option_group.id','=','option_group_id'] )
       ->execute();
     // Of these fields, get the Selects (group options)
-    $option_group_ids = array();
-    $option_group_ids_to_delete = array();
+    $option_group_ids = [];
+    $option_group_ids_to_delete = [];
     if( $event_invitation_group_fields && $event_invitation_group_fields->rowCount ){
       $restore_xml .= "<CustomFields>";
       foreach( $event_invitation_group_fields as $field ){
@@ -361,17 +361,17 @@ function _event_rsvp_reminders_on_uninstall()
 
   } catch(Throwable $th){
     // Log error and alert the user to manually remove the fields
-    $error_title = E::ts("There was an error deleting the data for extension %1.", array( 1=>E::LONG_NAME));
+    $error_title = E::ts("There was an error deleting the data for extension %1.", [ 1=>E::LONG_NAME]);
     $error_text = E::ts("Error details:<br>
                           %1<br>
                           The extension has been uninstalled, but some data remains in the database.<br>
                           Please check Custom Field Group <b>%2</b>, all its Custom Fields and respective Option Goups and Option Values and manually delete the unecessary ones.<br>
                           You may also want to delete table <i>%3</i> from the database.",
-                          array(
+                          [
                             1=> $th->getMessage(),
                             2=> isset( $event_invitation_group['title'] ) ? $event_invitation_group['title'] : "Event Invitation",
                             3=> isset( $event_invitation_group['table_name'] ) ? $event_invitation_group['table_name'] : "civicrm_value_event_invitation",
-                          ));  
+                          ]);
 
     CRM_Core_Session::setStatus($error_text, $error_title, "error");
 
