@@ -1,7 +1,6 @@
 <?php
 
 require_once 'event_rsvp_reminders.civix.php';
-require_once 'CRM/EventRsvpReminders/RSVPActionMapping.php';
 // phpcs:disable
 use CRM_EventRsvpReminders_ExtensionUtil as E;
 // phpcs:enable
