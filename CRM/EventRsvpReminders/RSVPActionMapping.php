@@ -22,7 +22,7 @@ use Civi\ActionSchedule\RecipientBuilder;
  */
 class CRM_Event_RSVPActionMapping extends \CRM_Event_ActionMapping implements \Civi\ActionSchedule\MappingInterface {
 
-  protected $custom_fields_with_options = array();
+  protected $custom_fields_with_options = [];
 
   // Add properties to hold the mapping values
   protected $id;
@@ -119,7 +119,7 @@ class CRM_Event_RSVPActionMapping extends \CRM_Event_ActionMapping implements \C
       $event_id = $_GET['compId'];
     }
 
-    $custom_recepients = array();
+    $custom_recepients = [];
     $custom_fields_with_options = _get_fields_with_options($event_id);
     foreach($custom_fields_with_options as $field ){
       $custom_recepients[ $field['option_group.name'] ] = $field['label'];
@@ -153,7 +153,7 @@ class CRM_Event_RSVPActionMapping extends \CRM_Event_ActionMapping implements \C
       default:
 
         if($recipientType) {
-          $values = array_merge( array('null' => '- Empty -'), CRM_Core_OptionGroup::values($recipientType) );
+          $values = array_merge( ['null' => '- Empty -'], CRM_Core_OptionGroup::values($recipientType) );
           if( $values ) return $values;
         }
         return [];
